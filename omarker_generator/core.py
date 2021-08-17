@@ -402,13 +402,43 @@ def add_margin_to_svg(svg_dir, out_dir, margin):
         with open(os.path.join(out_dir, f), "w") as file:
             template.writexml(file, encoding="utf-8")
 
+def text_to_vector(in_dir, out_dir):
+    """Export text elements to vector
+    format. This function uses inksckape command line interface, so
+    inkscape sould be installed on the computer.
+    """
+    svg_files = [f for f in os.listdir(in_dir)]
+
+    count = 0
+    length = len(svg_files)
+
+    # Create "out_dir" directory if it don't already exists
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    for f in svg_files:
+        filename, file_extension = os.path.splitext(f)
+        command = (
+            "inkscape --export-filename="
+            + os.path.join(out_dir, filename + ".svg")
+            + " --export-text-to-path --export-plain-svg "
+            + os.path.join(in_dir, f)
+        )
+        os.system(command)
+
+        count += 1
+        print(f'{count} files dones under a total of {length}'.)
 
 if __name__ == "__main__":
-    generate_svg_markers(
-        'liste_balises.xlsx'
-        'liste_balises',
-        'country_flags',
-        'faune_flore',
-        'lock_patterns',
-        'template_plaquette.svg',
+    # generate_svg_markers(
+    #     'liste_balises.xlsx'
+    #     'liste_balises',
+    #     'country_flags',
+    #     'faune_flore',
+    #     'lock_patterns',
+    #     'template_plaquette.svg',
+    # )
+    text_to_vector(
+        os.path.join("final", "svg_5mm_margin"),
+        os.path.join("final", "svg_5mm_margin_vector_text"),
     )
